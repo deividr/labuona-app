@@ -1,4 +1,3 @@
 #!/bin/bash
-
-npm ci
-npm run dev
+pnpm i
+pnpm run dev
