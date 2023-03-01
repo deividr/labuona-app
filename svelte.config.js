@@ -8,7 +8,11 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		alias: {
+			$images: './statics/assets/images',
+			$components: './src/components'
+		}
 	}
 };
 
