@@ -5,6 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev --host --port=3000",
+		"up": "docker compose up -d",
+		"down": "docker compose down",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "playwright test",
