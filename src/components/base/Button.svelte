@@ -4,7 +4,8 @@
 </script>
 
 <button
-	class={`rounded-sm h-10 bg-gray-600 text-gray-50 text-lg w-28 hover:ring-2 ring-gray-400 focus:bg-gray-500 ${
+	class={`rounded-sm h-10 bg-green-600 text-gray-50 text-lg w-28 hover:ring-2 ring-gray-400 focus:bg-gray-500 ${
 		fullWidth ? 'w-full' : ''
-	}`}>{text}</button
+	}`}
+	on:click>{text}</button
 >

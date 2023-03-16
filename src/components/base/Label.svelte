@@ -3,4 +3,4 @@
 	export let forId = '';
 </script>
 
-<label class="text-gray-700 font-bold" for={forId}>{label}</label>
+<label class="text-gray-700 font-medium" for={forId}>{label}</label>

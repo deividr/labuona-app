@@ -5,7 +5,7 @@
 	export let label = '';
 	export let id = label;
 	export let placeholder = '';
-	export let type = '';
+	export let type = 'text';
 	export let value = '';
 </script>
 
