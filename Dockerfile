@@ -8,4 +8,6 @@ RUN npm install -g pnpm
 
 COPY . .
 
-CMD [ ".docker/start.sh" ]
+RUN pnpm i
+
+CMD [ "pnpm", "run", "dev" ]
