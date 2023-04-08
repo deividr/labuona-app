@@ -1,20 +1,42 @@
 <script lang="ts">
-	import Button from '$components/base/Button.svelte';
-	import InputForm from '$components/composed/InputForm.svelte';
+	import { z, type SafeParseReturnType } from 'zod';
+	import { Button } from '$lib/components/base/Button';
+	import { InputForm } from '$lib/components/composed/InputForm';
+	import { deserialize } from '$app/forms';
 
-	let login: { username: string; password: string } = {
-		username: '',
-		password: ''
-	};
+	import type { ActionData } from './$types';
+	import type { ActionResult } from '@sveltejs/kit';
 
-	function onSubmit() {
-		console.log(login);
+	const schema = z.object({
+		username: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' }),
+		password: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' })
+	});
+
+	export let form: ActionData;
+
+	async function handleSubmit() {
+		const data = new FormData(this);
+
+		const login = {
+			username: 'D',
+			password: '3'
+		};
+
+		const resultValidate = await schema.safeParseAsync(login);
+		console.log(resultValidate.error.issues);
+
+		const response = await fetch(this.action, {
+			method: 'POST',
+			body: data
+		});
+
+		const result: ActionResult = deserialize(await response.text());
 	}
 </script>
 
 <div class="h-screen flex justify-center items-center bg-gradient-to-r from-red-500 to-green-500">
 	<div
-		class="w-96 h-fit p-10 rounded-lg col-span-2 md:col-span-1 flex flex-col justify-center items-center bg-slate-50 shadow-sm"
+		class="w-[400px] h-fit p-10 rounded-lg col-span-2 md:col-span-1 flex flex-col justify-center items-center bg-slate-50 shadow-sm"
 	>
 		<div class="w-64 drop-shadow-lg -mt-52">
 			<img src="/assets/images/logo.png" alt="Logo" />
@@ -25,17 +47,19 @@
 			Login
 		</h1>
 
-		<form on:submit={onSubmit} class="w-full">
+		<form method="POST" class="w-full" on:submit|preventDefault={handleSubmit}>
 			<div class="flex flex-col space-y-5">
 				<InputForm
-					bind:value={login.username}
+					name="username"
+					value={form?.username}
 					id="user"
 					placeholder="Digite o seu usuário"
 					label="Usuário"
 				/>
 				<InputForm
+					name="password"
 					type="password"
-					bind:value={login.password}
+					value={form?.password}
 					id="senha"
 					placeholder="Digite sua senha"
 					label="Senha"
