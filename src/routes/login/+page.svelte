@@ -1,36 +1,44 @@
 <script lang="ts">
-	import { z, type SafeParseReturnType } from 'zod';
+	import { z } from 'zod';
 	import { Button } from '$lib/components/base/Button';
 	import { InputForm } from '$lib/components/composed/InputForm';
-	import { deserialize } from '$app/forms';
+	import { enhance } from '$app/forms';
 
 	import type { ActionData } from './$types';
-	import type { ActionResult } from '@sveltejs/kit';
 
 	const schema = z.object({
 		username: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' }),
 		password: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' })
 	});
 
+	let errorMessages: z.infer<typeof schema> = {
+		username: '',
+		password: ''
+	};
+
 	export let form: ActionData;
 
-	async function handleSubmit() {
-		const data = new FormData(this);
+	async function handleSubmit({ action, data }: { action: URL; data: FormData }) {
+		const resultValidate = await schema.safeParseAsync(Object.fromEntries(data.entries()));
 
-		const login = {
-			username: 'D',
-			password: '3'
+		if (!resultValidate.success) {
+			errorMessages = {
+				username: resultValidate.error.flatten().fieldErrors.username?.[0] ?? '',
+				password: resultValidate.error.flatten().fieldErrors.password?.[0] ?? ''
+			};
+
+			return;
+		}
+
+		errorMessages = {
+			username: '',
+			password: ''
 		};
 
-		const resultValidate = await schema.safeParseAsync(login);
-		console.log(resultValidate.error.issues);
-
-		const response = await fetch(this.action, {
+		const response = await fetch(action, {
 			method: 'POST',
 			body: data
 		});
-
-		const result: ActionResult = deserialize(await response.text());
 	}
 </script>
 
@@ -47,7 +55,7 @@
 			Login
 		</h1>
 
-		<form method="POST" class="w-full" on:submit|preventDefault={handleSubmit}>
+		<form method="POST" class="w-full" on:submit|preventDefault use:enhance={handleSubmit}>
 			<div class="flex flex-col space-y-5">
 				<InputForm
 					name="username"
@@ -55,6 +63,7 @@
 					id="user"
 					placeholder="Digite o seu usuário"
 					label="Usuário"
+					errorMessage={errorMessages.username}
 				/>
 				<InputForm
 					name="password"
@@ -63,6 +72,7 @@
 					id="senha"
 					placeholder="Digite sua senha"
 					label="Senha"
+					errorMessage={errorMessages.password}
 				/>
 				<Button text="Entrar" fullWidth />
 			</div>
