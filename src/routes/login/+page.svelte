@@ -18,7 +18,7 @@
 
 	export let form: ActionData;
 
-	async function handleSubmit({ action, data }: { action: URL; data: FormData }) {
+	async function handleSubmit({ data, cancel }: { data: FormData; cancel: any }) {
 		const resultValidate = await schema.safeParseAsync(Object.fromEntries(data.entries()));
 
 		if (!resultValidate.success) {
@@ -26,7 +26,7 @@
 				username: resultValidate.error.flatten().fieldErrors.username?.[0] ?? '',
 				password: resultValidate.error.flatten().fieldErrors.password?.[0] ?? ''
 			};
-
+			cancel();
 			return;
 		}
 
@@ -35,10 +35,9 @@
 			password: ''
 		};
 
-		const response = await fetch(action, {
-			method: 'POST',
-			body: data
-		});
+		return async ({ result, update }: any) => {
+			console.log(result);
+		};
 	}
 </script>
 
@@ -55,7 +54,7 @@
 			Login
 		</h1>
 
-		<form method="POST" class="w-full" on:submit|preventDefault use:enhance={handleSubmit}>
+		<form method="POST" class="w-full" use:enhance={handleSubmit}>
 			<div class="flex flex-col space-y-5">
 				<InputForm
 					name="username"
