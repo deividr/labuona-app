@@ -1,20 +1,26 @@
-import { fail } from '@sveltejs/kit';
+import { API_URL } from '$env/static/private';
+import { fail, redirect } from '@sveltejs/kit';
 
 export const actions = {
-	default: async ({ cookies, request }: any) => {
-		console.log('veio para o servidor');
+	default: async ({ cookies, request, fetch }: any) => {
 		const data = await request.formData();
 		const username = data.get('username');
 		const password = data.get('password');
 
-		cookies.set('username', JSON.stringify(data.get('username')));
+		const response = await fetch(
+			`${API_URL}/auth/login?username=${username}&password=${password}`,
+			{
+				method: 'GET'
+			}
+		);
 
-		if (password !== 'password') {
-			return fail(400, { password, username, message: 'Senha inválida' });
+		if (response.ok) {
+			const { token } = await response.json();
+			console.log(token);
+			cookies.set('token', token);
+			throw redirect(303, '/');
 		}
 
-		if (username !== 'admin') {
-			return fail(400, { username, password, message: 'Usuário inválido' });
-		}
+		return fail(400, { username, password: '', error: true });
 	}
 };

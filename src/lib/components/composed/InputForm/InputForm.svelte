@@ -6,14 +6,15 @@
 	export let id = label;
 	export let value: any = '';
 	export let errorMessage: string = '';
+	export let hasError: boolean = false;
 
-	$: valid = !errorMessage;
+	$: valid = !hasError;
 </script>
 
 <fieldset class="w-full flex flex-col">
 	<Label {label} forId={id} />
 	<Input {id} bind:value bind:valid {...$$restProps} />
-	{#if errorMessage}
-		<span class="text-sm text-red-500 mt-2 ">{errorMessage}</span>
+	{#if !valid}
+		<span class="text-sm text-red-500 mt-2">{errorMessage}</span>
 	{/if}
 </fieldset>

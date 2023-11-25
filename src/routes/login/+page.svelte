@@ -7,8 +7,8 @@
 	import type { ActionData } from './$types';
 
 	const schema = z.object({
-		username: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' }),
-		password: z.string().min(3, { message: 'Deve ter mais de 3 caracteres' })
+		username: z.string().min(3, { message: 'Username obrigatório' }),
+		password: z.string().min(3, { message: 'Senha obrigatória' })
 	});
 
 	let errorMessages: z.infer<typeof schema> = {
@@ -18,8 +18,8 @@
 
 	export let form: ActionData;
 
-	async function handleSubmit({ data, cancel }: { data: FormData; cancel: any }) {
-		const resultValidate = await schema.safeParseAsync(Object.fromEntries(data.entries()));
+	async function handleSubmit({ formData, cancel }: { formData: FormData; cancel: any }) {
+		const resultValidate = await schema.safeParseAsync(Object.fromEntries(formData.entries()));
 
 		if (!resultValidate.success) {
 			errorMessages = {
@@ -33,10 +33,6 @@
 		errorMessages = {
 			username: '',
 			password: ''
-		};
-
-		return async ({ result, update }: any) => {
-			console.log(result);
 		};
 	}
 </script>
@@ -62,17 +58,23 @@
 					id="user"
 					placeholder="Digite o seu usuário"
 					label="Usuário"
+					hasError={form?.error || !!errorMessages.username}
 					errorMessage={errorMessages.username}
 				/>
 				<InputForm
 					name="password"
 					type="password"
-					value={form?.password}
 					id="senha"
 					placeholder="Digite sua senha"
 					label="Senha"
+					hasError={form?.error || !!errorMessages.password}
 					errorMessage={errorMessages.password}
 				/>
+				{#if form?.error}
+					<div class="full text-center text-red-500">
+						<span>Login inválido</span>
+					</div>
+				{/if}
 				<Button text="Entrar" fullWidth />
 			</div>
 		</form>
