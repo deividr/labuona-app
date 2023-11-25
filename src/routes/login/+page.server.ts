@@ -1,6 +1,12 @@
 import { API_URL } from '$env/static/private';
 import { fail, redirect } from '@sveltejs/kit';
 
+export const load = async ({ cookies }) => {
+	if (cookies.get('token')) {
+		throw redirect(303, '/');
+	}
+};
+
 export const actions = {
 	default: async ({ cookies, request, fetch }: any) => {
 		const data = await request.formData();
@@ -16,7 +22,6 @@ export const actions = {
 
 		if (response.ok) {
 			const { token } = await response.json();
-			console.log(token);
 			cookies.set('token', token);
 			throw redirect(303, '/');
 		}
