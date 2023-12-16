@@ -7,9 +7,11 @@
 	class="fixed top-0 left-0 h-full w-40 py-2 shadow-md flex flex-col justify-between bg-green-900 text-gray-300"
 >
 	<div class="flex flex-col gap-4">
-		<!-- <ItemMenu label="Home" href="/">
-			<Icon icon="material-symbols:home-outline" width="30px" slot="icon" />
-		</ItemMenu> -->
+		<div class="drop-shadow-lg flex justify-center">
+			<a href="/">
+				<img src="/assets/images/logo.png" alt="Logo" width="100" />
+			</a>
+		</div>
 		<ItemMenu label="Pedidos" href="/orders">
 			<Icon icon="lets-icons:order" width="30px" slot="icon" />
 		</ItemMenu>
