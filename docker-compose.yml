@@ -1,4 +1,4 @@
-version: '3.9'
+version: "3.9"
 
 services:
   labuona_app:
@@ -6,4 +6,4 @@ services:
     ports:
       - 3001:3001
     volumes:
-      - .:/home/node/app
+      - .:/usr/src/app
