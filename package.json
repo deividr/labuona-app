@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev --host --port=3001",
+		"up": "docker compose up -d",
 		"up:build": "docker compose up -d --build",
 		"down": "docker compose down",
 		"build": "vite build",
@@ -41,9 +42,5 @@
 		"vite": "^5.0.3",
 		"vitest": "^1.0.0",
 		"zod": "^3.22.4"
-	},
-	"volta": {
-		"node": "20.7.0",
-		"npm": "10.1.0"
 	}
 }

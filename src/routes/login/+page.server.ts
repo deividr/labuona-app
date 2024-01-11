@@ -26,6 +26,6 @@ export const actions = {
 			throw redirect(303, "/");
 		}
 
-		return fail(400, { username, password: "", error: true });
+		return fail(response.status, { username, password: "", error: true });
 	}
 };

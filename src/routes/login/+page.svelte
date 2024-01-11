@@ -1,38 +1,55 @@
 <script lang="ts">
-	import { z } from 'zod';
-	import { Button } from '$lib/components/base/Button';
-	import { InputForm } from '$lib/components/composed/InputForm';
-	import { enhance } from '$app/forms';
-
-	import type { ActionData } from './$types';
+	import { z } from "zod";
+	import { Button } from "$lib/components/base/Button";
+	import { InputForm } from "$lib/components/composed/InputForm";
+	import { enhance } from "$app/forms";
+	import type { ActionData } from "./$types";
+	import type { ActionResult } from "@sveltejs/kit";
 
 	const schema = z.object({
-		username: z.string().min(3, { message: 'Username obrigatório' }),
-		password: z.string().min(3, { message: 'Senha obrigatória' })
+		username: z.string().min(3, { message: "Username obrigatório" }),
+		password: z.string().min(3, { message: "Senha obrigatória" })
 	});
 
 	let errorMessages: z.infer<typeof schema> = {
-		username: '',
-		password: ''
+		username: "",
+		password: ""
 	};
 
 	export let form: ActionData;
+	let isSubmitting: boolean = false;
+	let errorMessage: string = "";
 
 	async function handleSubmit({ formData, cancel }: { formData: FormData; cancel: any }) {
+		isSubmitting = true;
+
 		const resultValidate = await schema.safeParseAsync(Object.fromEntries(formData.entries()));
 
 		if (!resultValidate.success) {
 			errorMessages = {
-				username: resultValidate.error.flatten().fieldErrors.username?.[0] ?? '',
-				password: resultValidate.error.flatten().fieldErrors.password?.[0] ?? ''
+				username: resultValidate.error.flatten().fieldErrors.username?.[0] ?? "",
+				password: resultValidate.error.flatten().fieldErrors.password?.[0] ?? ""
 			};
 			cancel();
 			return;
 		}
 
 		errorMessages = {
-			username: '',
-			password: ''
+			username: "",
+			password: ""
+		};
+
+		return async ({ result, update }: { result: ActionResult; update: any }) => {
+			isSubmitting = false;
+
+			await update();
+
+			if (result.status === 500) {
+				errorMessage = "Ocorreu um erro no servidor!";
+				return;
+			}
+
+			errorMessage = "Login inválido";
 		};
 	}
 </script>
@@ -72,10 +89,10 @@
 				/>
 				{#if form?.error}
 					<div class="full text-center text-red-500">
-						<span>Login inválido</span>
+						<span>{errorMessage}</span>
 					</div>
 				{/if}
-				<Button text="Entrar" fullWidth />
+				<Button text={isSubmitting ? "Loading" : "Entrar"} fullWidth disabled={isSubmitting} />
 			</div>
 		</form>
 	</div>
