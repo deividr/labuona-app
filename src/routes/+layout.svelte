@@ -7,8 +7,10 @@
 {#if $page.url.pathname === "/login"}
 	<slot />
 {:else}
-	<MenuBar />
-	<div class="bg ml-44">
-		<slot />
+	<div class="flex h-screen bg-slate-50">
+		<MenuBar />
+		<section class="p-4">
+			<slot />
+		</section>
 	</div>
 {/if}

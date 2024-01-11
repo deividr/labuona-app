@@ -3,22 +3,20 @@
 	import ItemMenu from "./ItemMenu.svelte";
 </script>
 
-<nav
-	class="fixed top-0 left-0 h-full w-40 py-2 shadow-md flex flex-col justify-between bg-green-900 text-gray-300"
->
-	<div class="flex flex-col gap-4">
-		<div class="drop-shadow-lg flex justify-center">
+<nav class="top-0 left-0 h-full w-40 p-2 shadow-md flex flex-col justify-between text-gray-700">
+	<ul class="flex flex-col gap-4">
+		<li class="drop-shadow-lg flex justify-center">
 			<a href="/">
 				<img src="/assets/images/logo.png" alt="Logo" width="100" />
 			</a>
-		</div>
+		</li>
 		<ItemMenu label="Pedidos" href="/orders">
 			<Icon icon="lets-icons:order" width="30px" slot="icon" />
 		</ItemMenu>
 		<ItemMenu label="Produtos" href="/products">
 			<Icon icon="fluent-mdl2:product-list" width="30px" slot="icon" />
 		</ItemMenu>
-	</div>
+	</ul>
 	<div class="my-2 ml-2">
 		<form action="/logout" method="post">
 			<button type="submit" role="link" class="flex items-end gap-2">
